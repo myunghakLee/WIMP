@@ -28,20 +28,23 @@ for index in range(3):
             write_pickle["AGENT"] = {}
             write_pickle["SOCIAL"] = []
             write_pickle['AGENT']["XY_FEATURES"] = smoothing(data['AGENT']["XY_FEATURES"])
+            write_pickle['AGENT']["HEURISTIC_ORACLE_CENTERLINE_NORMALIZED_PARTIAL"] = data['AGENT']["HEURISTIC_ORACLE_CENTERLINE_NORMALIZED_PARTIAL"]
             if "LABELS" in data["AGENT"]:
                 write_pickle['AGENT']["LABELS"] = smoothing(data['AGENT']["LABELS"])
             write_pickle["PATH"] = data["PATH"]
             write_pickle["SEQ_ID"] = data["SEQ_ID"]
             write_pickle["TRANSLATION"] = data["TRANSLATION"]
             write_pickle["ROTATION"] = data["ROTATION"]
+            write_pickle["CITY_NAME"] = data["CITY_NAME"]
+            
             for i in range(len(data['SOCIAL'])):
                 T = {}
                 T["XY_FEATURES"] = smoothing(data['SOCIAL'][i]["XY_FEATURES"])
-                if "LABELS" in data["AGENT"]:
+                T["HEURISTIC_ORACLE_CENTERLINE_NORMALIZED_PARTIAL"] = data['SOCIAL'][i]["HEURISTIC_ORACLE_CENTERLINE_NORMALIZED_PARTIAL"]
+                if "LABELS" in data['SOCIAL'][i]:
                     T["LABELS"] = smoothing(data['SOCIAL'][i]["LABELS"])
+                T["TSTAMPS"] = data["SOCIAL"][i]["TSTAMPS"]
                 write_pickle["SOCIAL"].append(T)
-                
 
             with open(save_dir + file_list[file_index], 'wb') as fw:
                 pickle.dump(write_pickle, fw)
-
