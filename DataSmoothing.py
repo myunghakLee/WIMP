@@ -4,7 +4,19 @@ import statsmodels.api as sm
 
 def smoothing(arr):
     if len(arr)>0:
-        return sm.nonparametric.lowess(arr[...,1] , arr[...,0])
+        arr[...,0] += [i/10000 for i in range(len(arr))]
+        arr[...,1] += [i/10000 for i in range(len(arr))]
+        ans = sm.nonparametric.lowess(arr[...,1] , arr[...,0])
+        nan_check = np.isnan(ans)
+        assert not (True in nan_check), "None is exist"
+#             dist1 = max(arr[...,1]) - min(arr[...,1])
+#             dist2 = max(arr[...,0]) - min(arr[...,0])
+#             print(dist1, dist2)
+# #             if dist1>5 or dist2>5:
+# #                 print(max(arr[...,0]), min(arr[...,0]),max(arr[...,1]), min(arr[...,1]))
+#             print(arr)
+        
+        return ans
     return arr
 
 
@@ -20,7 +32,6 @@ for index in range(3):
     save_dir = f"data/argoverse_processed_smoothing/{dir_arr[index]}/"
     file_list = sorted(os.listdir(pickle_dir), key = lambda a: int(a.split(".")[0]))
     print(save_dir)
-
     for file_index in tqdm(range(len(file_list))):
         with open(pickle_dir + file_list[file_index], 'rb') as f:
             data = pickle.load(f)
@@ -45,6 +56,10 @@ for index in range(3):
                     T["LABELS"] = smoothing(data['SOCIAL'][i]["LABELS"])
                 T["TSTAMPS"] = data["SOCIAL"][i]["TSTAMPS"]
                 write_pickle["SOCIAL"].append(T)
-
             with open(save_dir + file_list[file_index], 'wb') as fw:
                 pickle.dump(write_pickle, fw)
+
+
+float('nan')
+
+data['SOCIAL'][7]["XY_FEATURES"][...,0] + [1,2,3,4,5,6,7,1,2,3,4,5,6,7,1,2,3,4]
