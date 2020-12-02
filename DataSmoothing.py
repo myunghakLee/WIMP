@@ -2,13 +2,20 @@ import numpy as np
 import pylab as plt
 import statsmodels.api as sm
 
-def smoothing(arr):
+def smoothing(arr, weight=1):
     if len(arr)>0:
-        arr[...,0] += [i/10000 for i in range(len(arr))]
-        arr[...,1] += [i/10000 for i in range(len(arr))]
+        arr[...,0] += [i/10000*weight for i in range(len(arr))]
+        arr[...,1] += [i/10000*weight for i in range(len(arr))]
+
         ans = sm.nonparametric.lowess(arr[...,1] , arr[...,0])
         nan_check = np.isnan(ans)
-        assert not (True in nan_check), "None is exist"
+        
+        if (True in nan_check):
+            ans = smoothing(arr, weight *0.8)
+            assert weight > 0.1, "recursive function is too continuous"
+            
+            nan_check = np.isnan(ans)
+        assert not (True in nan_check), ("None is exist, ",arr)
 #             dist1 = max(arr[...,1]) - min(arr[...,1])
 #             dist2 = max(arr[...,0]) - min(arr[...,0])
 #             print(dist1, dist2)
@@ -25,9 +32,9 @@ import numpy as np
 import pickle
 import os
 
-dir_arr = ["val", "test", "train"]
+dir_arr = ["train"]
 
-for index in range(3):
+for index in range(1):
     pickle_dir = f"data/argoverse_processed/{dir_arr[index]}/"
     save_dir = f"data/argoverse_processed_smoothing/{dir_arr[index]}/"
     file_list = sorted(os.listdir(pickle_dir), key = lambda a: int(a.split(".")[0]))
@@ -59,7 +66,3 @@ for index in range(3):
             with open(save_dir + file_list[file_index], 'wb') as fw:
                 pickle.dump(write_pickle, fw)
 
-
-float('nan')
-
-data['SOCIAL'][7]["XY_FEATURES"][...,0] + [1,2,3,4,5,6,7,1,2,3,4,5,6,7,1,2,3,4]
