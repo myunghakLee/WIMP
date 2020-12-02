@@ -91,6 +91,16 @@ python main.py --mode train --dataroot ./data/argoverse_processed --IFC \
 --experiment-name example --gpus 4 --batch-size 25
 ```
 
+
+``` bash
+python main.py --mode train --dataroot ./data/argoverse_processed_smoothing --IFC \
+--lr 0.0001 --weight-decay 0.0 --non-linearity relu  --use-centerline-features \
+--segment-CL-Encoder-Prob --num-mixtures 1 --output-conv --output-prediction \
+--gradient-clipping --hidden-key-generator --k-value-threshold 10 \
+--scheduler-step-size 60 90 120 150 180  --distributed-backend ddp \
+--experiment-name example --gpus 1 --batch-size 25 --k-value-threshold 1 --k-values 1
+```
+
 ## Citing
 
 If you've found this code to be useful, please consider citing our paper!
