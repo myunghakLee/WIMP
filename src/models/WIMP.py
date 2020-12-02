@@ -61,7 +61,7 @@ class WIMP(pl.LightningModule):
         parser.add_argument("--weight-decay", type=float, default=0.0, help="Weight Decay")
         parser.add_argument('--dropout', type=float, default=0.5, help="Dropout rate for training")
         parser.add_argument("--k-value-threshold", type=int, default=5, help="Threshold for k reduction")
-        parser.add_argument("--k-values", nargs='+', default=[6, 5, 4, 3, 2, 1])
+        parser.add_argument("--k-values", nargs='+', default=[6, 5, 4, 3, 2, 1], type=int)
         parser.add_argument("--gradient-clipping", action='store_true', help="Enable gradient clipping")
         parser.add_argument("--scheduler-step-size", nargs='+', type=int, default=[30, 60, 90, 120, 150])
         parser.add_argument("--wta", action='store_true', help="Use Winner Takes All approach")
