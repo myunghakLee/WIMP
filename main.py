@@ -10,6 +10,7 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from src.data.argoverse_datamodule import ArgoverseDataModule
 from src.data.dummy_datamodule import DummyDataModule
 from src.models.WIMP import WIMP
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 
 def parse_arguments():
@@ -93,11 +94,20 @@ def cli_main(args):
     # Initialize trainer
     logger = TensorBoardLogger(os.getcwd(), name='experiments', version=args.experiment_name)
 #     early_stop_cb = EarlyStopping(patience=args.early_stop_threshold, verbose=True)
+
+    checkpoint_callback = ModelCheckpoint(
+        filepath=f"experiments/{args.experiment_name}/",
+        save_top_k=10, 
+        monitor='g_loss', 
+        verbose=True
+    )
+
+
     trainer = pl.Trainer(gpus=args.gpus, check_val_every_n_epoch=args.check_val_every_n_epoch,
                          max_epochs=args.max_epochs, default_root_dir=os.getcwd(),
                          distributed_backend=args.distributed_backend, num_nodes=args.num_nodes,
                          precision=args.precision, resume_from_checkpoint=args.resume_from_checkpoint,
-                         logger=logger)
+                         logger=logger, callbacks=[checkpoint_callback])
     trainer.fit(model, dm)
 
     trainer.save_checkpoint("Last.ckpt")
@@ -107,7 +117,6 @@ def cli_main(args):
         trainer.save_checkpoint("experiments/" + args.experiment_name +"/Last.ckpt")
     except:
         pass
-
 
 if __name__ == '__main__':
     args = parse_arguments()
