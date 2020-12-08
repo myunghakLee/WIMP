@@ -79,6 +79,7 @@ def add_experimental_args(parent_parser):
     return parser
 
 
+# +
 def cli_main(args):
     os.makedirs("experiments/" + args.experiment_name, exist_ok=True)
     # Set global random seed
@@ -95,19 +96,19 @@ def cli_main(args):
     logger = TensorBoardLogger(os.getcwd(), name='experiments', version=args.experiment_name)
 #     early_stop_cb = EarlyStopping(patience=args.early_stop_threshold, verbose=True)
 
-    checkpoint_callback = ModelCheckpoint(
-        filepath=f"experiments/{args.experiment_name}/",
-        save_top_k=10, 
-        monitor='g_loss', 
-        verbose=True
-    )
+#     checkpoint_callback = ModelCheckpoint(
+#         filepath=f"experiments/{args.experiment_name}/",
+#         save_top_k=10, 
+#         monitor='g_loss', 
+#         verbose=True
+#     )
 
 
     trainer = pl.Trainer(gpus=args.gpus, check_val_every_n_epoch=args.check_val_every_n_epoch,
                          max_epochs=args.max_epochs, default_root_dir=os.getcwd(),
                          distributed_backend=args.distributed_backend, num_nodes=args.num_nodes,
                          precision=args.precision, resume_from_checkpoint=args.resume_from_checkpoint,
-                         logger=logger, callbacks=[checkpoint_callback])
+                         logger=logger)
     trainer.fit(model, dm)
 
     trainer.save_checkpoint("Last.ckpt")
@@ -117,6 +118,7 @@ def cli_main(args):
         trainer.save_checkpoint("experiments/" + args.experiment_name +"/Last.ckpt")
     except:
         pass
+# -
 
 if __name__ == '__main__':
     args = parse_arguments()
