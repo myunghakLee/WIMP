@@ -1,0 +1,7 @@
+numpy
+matplotlib==1.4.3
+opencv-python
+plyfile
+h5py
+tqdm
+jpype1
