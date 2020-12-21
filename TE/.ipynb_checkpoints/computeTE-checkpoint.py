@@ -104,6 +104,19 @@ if __name__ == '__main__':
             pickle.dump(te, f, pickle.HIGHEST_PROTOCOL)
 
 # +
+import pickle
+import os
+
+file_root = "TEdata/val/"
+file_list = os.listdir(file_root)
+for f in file_list[3:10]:
+    with open(file_root + f, 'rb') as f:
+        data = pickle.load(f)
+    print(data)
+    break
+
+
+# +
 # import random as r
 # [[r.random()*10,r.random()*10] for i in range(20)]
 
